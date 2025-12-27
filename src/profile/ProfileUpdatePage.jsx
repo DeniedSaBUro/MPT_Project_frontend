@@ -8,9 +8,9 @@ const ProfilePage = () => {
   const { user, setUser, logout } = useAuth();
   const navigate = useNavigate(); 
   const [form, setForm] = useState({
-    username: user?.Username || '',
-    fullName: user?.FullName || '',
-    description: user?.Description || ''
+    username: user?.username || '',
+    full_name: user?.full_name || '',
+    description: user?.description || ''
   });
   const [initialForm, setInitialForm] = useState(form);
 
@@ -20,9 +20,9 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       const data = {
-        username: user.Username || '',
-        fullName: user.FullName || '',
-        description: user.Description || ''
+        username: user.username || '',
+        full_name: user.full_name || '',
+        description: user.description || ''
       };
       setForm(data);
       setInitialForm(data);
@@ -32,7 +32,7 @@ const ProfilePage = () => {
   const handleProfileSave = async () => {
     const diff = {};
     if (form.username !== initialForm.username) diff.username = form.username;
-    if (form.fullName !== initialForm.fullName) diff.fullName = form.fullName;
+    if (form.full_name !== initialForm.full_name) diff.full_name = form.full_name;
     if (form.description !== initialForm.description) diff.description = form.description;
 
     if (!Object.keys(diff).length) {
@@ -102,8 +102,8 @@ const ProfilePage = () => {
         <div className="flex flex-col items-center md:w-1/3">
           <img
             src={
-              user?.AvatarURL
-                ? `http://localhost:8080${user.AvatarURL}?t=${Date.now()}`
+              user?.avatar_url
+                ? `http://localhost:8080${user.avatar_url}?t=${Date.now()}`
                 : '/default-avatar.png'
             }
             className="w-32 h-32 rounded-full object-cover mb-4"
@@ -134,8 +134,8 @@ const ProfilePage = () => {
           <div>
             <label className="block mb-1 font-semibold">Полное имя</label>
             <input
-              value={form.fullName}
-              onChange={e => setForm({ ...form, fullName: e.target.value })}
+              value={form.full_name}
+              onChange={e => setForm({ ...form, full_name: e.target.value })}
               className="w-full border rounded px-3 py-2"
             />
           </div>

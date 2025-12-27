@@ -40,11 +40,11 @@ const HomePage = () => {
                     Профиль
                     <img
                       src={
-                        user?.AvatarURL
-                          ? `http://localhost:8080${user.AvatarURL}?t=${Date.now()}`
+                        user?.avatar_url
+                          ? `http://localhost:8080${user.avatar_url}?t=${Date.now()}`
                           : '/default-avatar.png'
                       }
-                      className="w-16 h-16 rounded-full object-cover"
+                      className="w-16 h-16 rounded-full object-cover mb-4"
                     />
                   </Link>
                 </>
