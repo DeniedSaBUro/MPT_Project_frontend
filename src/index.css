@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-white text-black transition-colors duration-300;
+  }
+
+  html.dark body {
+    @apply bg-insta-dark text-white;
+  }
+
+  html.dark {
+    background-color: #0c0f14;
+  }
