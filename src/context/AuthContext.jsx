@@ -17,25 +17,38 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Проверяем токен при загрузке приложения
+  const loadUser = async () => {
     const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-      // Можно добавить запрос для получения данных пользователя
+    console.log('TOKEN FROM LS:', storedToken);
+
+    if (!storedToken) {
+      setLoading(false);
+      return;
     }
-    setLoading(false);
-  }, []);
-  
-  const login = async (username, password) => {
+
     try {
-      const response = await authService.login(username, password);
-      const newToken = response.access_token;
-      setToken(newToken);
-      localStorage.setItem('token', newToken);
-      return response;
-    } catch (error) {
-      throw error;
+      const userData = await authService.getProfile();
+      console.log('USER LOADED:', userData);
+      setUser(userData);
+      setToken(storedToken);
+    } catch (e) {
+      console.log('PROFILE LOAD ERROR', e);
+      localStorage.removeItem('token');
+      setToken(null);
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  loadUser();
+}, []);
+
+  const login = async (username, password) => {
+    const response = await authService.login(username, password);
+    const userData = await authService.getProfile();
+    setUser(userData);
+    setToken(response.access_token);
   };
   
   const register = async (userData) => {
@@ -58,6 +71,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     token,
     user,
+    setUser,
     login,
     register,
     logout,

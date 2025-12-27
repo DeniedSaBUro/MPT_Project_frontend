@@ -21,14 +21,50 @@ const register = async (userData) => {
     return response.data;
 };
 
+const getProfile = async () => {
+    console.log('GET /users/me');
+    const response = await http.get('/users/me');
+    console.log('PROFILE RESPONSE:', response.data);
+    return response.data;
+};
+
 const logout = () => {
     localStorage.removeItem('token');
 };
 
+const updateProfile = async (data) => {
+  const payload = {};
+  if (data.username !== undefined) payload.username = data.username;
+  if (data.fullName !== undefined) payload.full_name = data.fullName;
+  if (data.description !== undefined) payload.description = data.description;
+
+  return await http.patch('/users/update', payload);
+};
+
+const changePassword = async(oldPassword, newPassword) =>{
+    await http.patch('/users/setPassword', {
+        old_password: oldPassword,
+        new_password: newPassword
+    });
+};
+
+const uploadAvatar = async (file) =>{
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await http.post('/users/setAvatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    return response.data
+}
 const authService = {
     login,
     register,
-    logout
+    logout,
+    getProfile,
+    updateProfile,
+    changePassword,
+    uploadAvatar
 };
 
 export default authService;

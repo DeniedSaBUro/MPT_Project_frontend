@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './auth/LoginPage';
 import RegisterPage from './auth/RegisterPage';
+import ProfilePage from './profile/ProfileUpdatePage'
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -34,13 +36,17 @@ const HomePage = () => {
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
                 <>
-                  <span className="text-gray-700">Добро пожаловать!</span>
-                  <button
-                    onClick={logout}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
-                  >
-                    Выйти
-                  </button>
+                  <Link to="/profile" className="text-gray-700 hover:text-indigo-600">
+                    Профиль
+                    <img
+                      src={
+                        user?.AvatarURL
+                          ? `http://localhost:8080${user.AvatarURL}?t=${Date.now()}`
+                          : '/default-avatar.png'
+                      }
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                  </Link>
                 </>
               ) : (
                 <Link
@@ -75,10 +81,17 @@ const HomePage = () => {
 function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" reverseOrder={false} />
       <Router>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/profile" element = {
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+          />
           <Route 
             path="/" 
             element={
