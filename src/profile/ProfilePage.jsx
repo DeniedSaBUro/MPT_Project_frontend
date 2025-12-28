@@ -86,27 +86,27 @@ const ProfilePage = () => {
   }
 };
 
-const loadUserPosts = async (userId) => {
-  setIsLoadingPosts(true);
-  try {
-    const userPosts = await postService.getUserPosts(userId);
-    console.log('Loaded posts:', userPosts);
-    
-    if (!userPosts) {
+  const loadUserPosts = async (userId) => {
+    setIsLoadingPosts(true);
+    try {
+      const userPosts = await postService.getUserPosts(userId);
+      console.log('Loaded posts:', userPosts);
+      
+      if (!userPosts) {
+        setPosts([]);
+        return;
+      }
+      
+      const postsWithStats = await loadPostsWithStats(userPosts);
+      setPosts(postsWithStats || []);
+    } catch (error) {
+      console.error('Error loading user posts:', error);
+      toast.error('Ошибка загрузки постов');
       setPosts([]);
-      return;
+    } finally {
+      setIsLoadingPosts(false);
     }
-    
-    const postsWithStats = await loadPostsWithStats(userPosts);
-    setPosts(postsWithStats || []);
-  } catch (error) {
-    console.error('Error loading user posts:', error);
-    toast.error('Ошибка загрузки постов');
-    setPosts([]);
-  } finally {
-    setIsLoadingPosts(false);
-  }
-};
+  };
 
   useEffect(() => {
     const loadProfileData = async () => {
@@ -274,6 +274,10 @@ const loadUserPosts = async (userId) => {
           ...prev,
           [personId]: false
         }));
+        toast.success(`Вы отписались от ${personUsername}`);
+        if (profileUser.id !== currentUser.id){
+          return
+        }
         
         if (activeModal === 'following') {
           setFollowing(prev => prev.filter(person => person.id !== personId));
@@ -283,7 +287,6 @@ const loadUserPosts = async (userId) => {
           }));
         }
         
-        toast.success(`Вы отписались от ${personUsername}`);
       } else {
         await followService.follow(personId);
         setFollowStatuses(prev => ({
@@ -382,11 +385,11 @@ const loadUserPosts = async (userId) => {
             <div className="flex-1">
               <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
                 <div className="flex-1">
-                  <h2 className="text-2xl font-normal text-gray-900 dark:text-white mb-1">
+                  <h2 className="text-2xl font-normal text-gray-900 dark:text-white mb-1 text-left">
                     {profileUser.username}
                   </h2>
                   {profileUser.full_name && (
-                    <p className="text-gray-800 dark:text-gray-200 font-medium text-lg">
+                    <p className="text-gray-800 dark:text-gray-400 text-lg text-left">
                       {profileUser.full_name}
                     </p>
                   )}
@@ -402,6 +405,19 @@ const loadUserPosts = async (userId) => {
                     </button>
                   </div>
                 )}
+                {!isOwnProfile && currentUser && (
+                <div className="flex gap-3 mt-4">
+                  <button
+                    onClick={handleFollowToggle}
+                    disabled={isLoadingFollow}
+                    className={`px-6 py-2 rounded-lg transition-colors duration-200 text-sm ${isFollowing 
+                      ? 'bg-gray-200 dark:bg-zinc-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-zinc-600' 
+                      : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
+                  >
+                    {isLoadingFollow ? 'Загрузка...' : (isFollowing ? 'Отписаться' : 'Подписаться')}
+                  </button>
+                </div>
+              )}
               </div>
 
               <div className="flex gap-10 mb-4">
@@ -441,23 +457,9 @@ const loadUserPosts = async (userId) => {
 
               {profileUser.description && (
                 <div className="mt-4 w-full max-w-full overflow-hidden">
-                  <p className="text-gray-700 dark:text-gray-300 text-sm break-all word-break-break-all overflow-wrap-break-word whitespace-normal">
+                  <p className="text-gray-700 dark:text-gray-300 text-sm text-left break-all word-break-break-all overflow-wrap-break-word whitespace-normal">
                     {profileUser.description}
                   </p>
-                </div>
-              )}
-
-              {!isOwnProfile && currentUser && (
-                <div className="flex gap-3 mt-4">
-                  <button
-                    onClick={handleFollowToggle}
-                    disabled={isLoadingFollow}
-                    className={`px-6 py-2 rounded-lg transition-colors duration-200 text-sm ${isFollowing 
-                      ? 'bg-gray-200 dark:bg-zinc-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-zinc-600' 
-                      : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
-                  >
-                    {isLoadingFollow ? 'Загрузка...' : (isFollowing ? 'Отписаться' : 'Подписаться')}
-                  </button>
                 </div>
               )}
             </div>
@@ -576,7 +578,7 @@ const loadUserPosts = async (userId) => {
                     <img
                       src={
                         person.avatar_url
-                          ? `http://localhost:8080${person.avatar_url}`
+                          ? `http://localhost:8080${person.avatar_url}?t=${Date.now()}`
                           : '/default-avatar.png'
                       }
                       className="w-12 h-12 rounded-full object-cover"
@@ -589,10 +591,10 @@ const loadUserPosts = async (userId) => {
                         navigate(`/profile/${person.username}`);
                       }}
                     >
-                      <h4 className="font-semibold text-gray-900 dark:text-white">
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-left">
                         {person.username}
                       </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 text-left">
                         {person.full_name || 'Без имени'}
                       </p>
                     </div>

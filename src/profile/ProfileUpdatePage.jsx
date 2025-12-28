@@ -91,10 +91,10 @@ const ProfilePage = () => {
       <div className="max-w-4xl mx-auto mt-10 p-6 bg-white dark:bg-zinc-900 text-black dark:text-white rounded shadow">
         <div className="flex justify-between items-center mb-6">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(-1)}
             className="bg-gray-200 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-white px-4 py-2 rounded"
           >
-            На главную
+            Назад
           </button>
         <h1 className="text-2xl font-bold">Профиль</h1>
       </div>
@@ -124,7 +124,7 @@ const ProfilePage = () => {
         </label>
 
         {avatarFile && (
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 break-all word-break-break-all overflow-wrap-break-word">
             Выбрано: {avatarFile.name}
           </p>
         )}

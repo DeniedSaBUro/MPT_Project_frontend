@@ -66,7 +66,7 @@ const PostCard = ({ post }) => {
             <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-zinc-700">
               <img
                 src={post.author.avatar_url 
-                  ? `http://localhost:8080${post.author.avatar_url}` 
+                  ? `http://localhost:8080${post.author.avatar_url}?t=${Date.now()}`  
                   : '/default-avatar.png'}
                 className="w-full h-full object-cover cursor-pointer hover:opacity-80"
                 alt="avatar"

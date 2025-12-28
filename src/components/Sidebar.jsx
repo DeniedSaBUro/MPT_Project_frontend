@@ -187,7 +187,7 @@ const Sidebar = () => {
               <img 
                 src={
                   user?.avatar_url
-                    ? `http://localhost:8080${user.avatar_url}`
+                    ? `http://localhost:8080${user.avatar_url}?t=${Date.now()}`
                     : '/default-avatar.png'
                 } 
                 className="w-full h-full object-cover" 

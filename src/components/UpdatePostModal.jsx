@@ -84,7 +84,7 @@ const UpdatePostModal = ({ post, onClose, onPostUpdated }) => {
             <div className="w-2/5 flex flex-col bg-white dark:bg-black">
               <div className="p-4 flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden">
-                   {post.author?.avatar_url && <img src={`http://localhost:8080${post.author.avatar_url}`} className="w-full h-full object-cover" />}
+                   {post.author?.avatar_url && <img src={`http://localhost:8080${post.author.avatar_url}?t=${Date.now()}`} className="w-full h-full object-cover" />}
                 </div>
                 <span className="font-semibold text-sm dark:text-white">{post.author?.username}</span>
               </div>
