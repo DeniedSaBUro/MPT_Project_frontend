@@ -5,6 +5,7 @@ import LoginPage from './auth/LoginPage';
 import RegisterPage from './auth/RegisterPage';
 import ProfileUpdatePage from './profile/ProfileUpdatePage'
 import ProfilePage from './profile/ProfilePage';
+import PostPage from './post/PostPage';
 import './App.css';
 import HomePage from './home/Home';
 import ExplorePage from './explore/Explore';
@@ -49,6 +50,7 @@ function App() {
           />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/p/:id" element={<PostPage />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import http from '../http-common';
 import PostModal from './PostModal';
+import PostOptions from './PostOptions';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const PostCard = ({ post }) => {
+  const { user, setUser, logout } = useAuth();
+
   const [currentMediaIdx, setCurrentMediaIdx] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -17,6 +22,8 @@ const PostCard = ({ post }) => {
 
   const [commentCount, setCommentCount] = useState(0);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,7 +34,7 @@ const PostCard = ({ post }) => {
         ]);
         setLikesCount(countRes.data);
         setLiked(statusRes.data);
-        setCommentCount(commentRes.data.length || 0)
+        setCommentCount(commentRes.data?.length || 0)
       } catch (err) {
         console.error("Ошибка загрузки данных лайков", err);
       }
@@ -55,22 +62,23 @@ const PostCard = ({ post }) => {
     <>
       <div className="w-full max-w-[470px] mx-auto mb-8 border-b border-gray-200 dark:border-gray-800 pb-5">
         <div className="flex items-center justify-between py-3">
-          <div className="flex items-center gap-3 cursor-pointer">
+          <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-zinc-700">
               <img
                 src={post.author.avatar_url 
                   ? `http://localhost:8080${post.author.avatar_url}` 
                   : '/default-avatar.png'}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover cursor-pointer hover:opacity-80"
                 alt="avatar"
+                onClick={() => navigate(`/profile/${post.author.username}`)}
               />
             </div>
-            <span className="text-sm font-semibold dark:text-white hover:opacity-80 transition">
+            <span className="text-sm font-semibold dark:text-white cursor-pointer hover:opacity-80" onClick={() => navigate(`/profile/${post.author.username}`)}>
               {post.author.username}
             </span>
             <span className="text-gray-500 text-sm">• 4 ч.</span>
           </div>
-          <button className="font-bold text-lg dark:text-white hover:opacity-60">•••</button>
+          <PostOptions post={post} currentUser={user}/>
         </div>
 
         <div className="relative w-full aspect-square bg-black rounded-[4px] overflow-hidden flex items-center justify-center border border-gray-200 dark:border-gray-800">
@@ -136,7 +144,7 @@ const PostCard = ({ post }) => {
               {likesCount} отметок "Нравится"
             </div>
             <div className="text-sm dark:text-white mb-1 leading-snug">
-              <span className="font-semibold mr-2 cursor-pointer hover:opacity-80">
+              <span className="font-semibold mr-2 cursor-pointer hover:opacity-80" onClick={() => navigate(`/profile/${post.author.username}`)}>
                 {post.author.username}
               </span>
               <span className="dark:text-gray-100">

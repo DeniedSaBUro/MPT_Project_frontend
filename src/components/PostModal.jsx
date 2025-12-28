@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import http from '../http-common';
 import { useAuth } from '../context/AuthContext';
+import PostOptions from './PostOptions';
+import { useNavigate } from 'react-router-dom';
 
-const PostModal = ({ post, onClose }) => {
+const PostModal = ({post, onClose }) => {
+
   const { user, setUser, logout } = useAuth();
 
   const [liked, setLiked] = useState(false);
@@ -14,6 +17,8 @@ const PostModal = ({ post, onClose }) => {
   const [replyTo, setReplyTo] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [expandedComments, setExpandedComments] = useState([]);
+
+  const navigate = useNavigate();
   
   const findRootId = (commentId, allComments) => {
     const current = allComments.find(c => c.id === commentId);
@@ -41,6 +46,7 @@ const PostModal = ({ post, onClose }) => {
   };
 
   useEffect(() => {
+    console.log(post)
     document.body.style.overflow = 'hidden';
     const fetchData = async () => {
         try {
@@ -126,198 +132,201 @@ const PostModal = ({ post, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-10">
-      <div 
-        className="absolute inset-0 bg-black/80 cursor-pointer" 
-        onClick={onClose}
-      />
-      <button 
-        onClick={onClose}
-        className="absolute top-5 right-5 text-white text-3xl z-[110] hover:opacity-70"
-      >
-        ✕
-      </button>
+        <div 
+          className="absolute inset-0 bg-black/80 cursor-pointer" 
+          onClick={onClose}
+        />
+        <button 
+          onClick={onClose}
+          className="absolute top-5 right-5 text-white text-3xl z-[110] hover:opacity-70"
+        >
+          ✕
+        </button>
 
-      <div className="relative flex flex-col md:flex-row w-full max-w-6xl h-full max-h-[90vh] bg-white dark:bg-slate-300 rounded-r-sm overflow-hidden shadow-2xl">
-        <div className="flex-[1.5] bg-white flex items-center justify-center relative dark:bg-insta-light-dark">
-          {post.media_urls?.length > 0 ? (
-            <img
-              src={`http://localhost:8080${post.media_urls[currentMediaIdx]}`}
-              className="w-full h-full object-contain"
-              alt="post content"
-            />
-          ) : (
-            <div className="text-white">Медиа отсутствуют</div>
-          )}
-          {post.media_urls?.length > 1 && (
-             <>
-             <button 
-               onClick={() => setCurrentMediaIdx(prev => (prev - 1 + post.media_urls.length) % post.media_urls.length)}
-               className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-black w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-md z-10"
-             >
-               ❮
-             </button>
-             <button 
-               onClick={() => setCurrentMediaIdx(prev => (prev + 1) % post.media_urls.length)}
-               className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-black w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-md z-10"
-             >
-               ❯
-             </button>
-             <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
-               {post.media_urls.map((_, idx) => (
-                 <div 
-                   key={idx}
-                   className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentMediaIdx ? 'bg-white' : 'bg-white/40'}`} 
-                 />
-               ))}
-             </div>
-           </>
-          )}
-        </div>
-
-        <div className="flex-1 flex flex-col bg-white dark:bg-insta-light-dark min-w-[350px]">
-          <div className="flex items-center justify-between p-4 border-b border-gray-800">
-            <div className="flex items-center gap-3">
-              <img 
-                src={post.author.avatar_url ? `http://localhost:8080${post.author.avatar_url}` : '/default-avatar.png'} 
-                className="w-9 h-9 rounded-full object-cover" 
-                alt="avatar"
+        <div className="relative flex flex-col md:flex-row w-full max-w-6xl h-full max-h-[90vh] bg-white dark:bg-slate-300 rounded-r-sm overflow-hidden shadow-2xl">
+          <div className="flex-[1.5] bg-white flex items-center justify-center relative dark:bg-insta-light-dark border-r dark:border-slate-800">
+            {post.media_urls?.length > 0 ? (
+              <img
+                src={`http://localhost:8080${post.media_urls[currentMediaIdx]}`}
+                className="w-full h-full object-contain"
+                alt="post content"
               />
-              <span className="font-semibold text-sm dark:text-white">{post.author.username}</span>
-            </div>
-            <button className="dark:text-white font-bold">•••</button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
-             <div className="text-gray-500 text-sm text-center">
-                <div className="flex gap-3">
-                    <img src={post.author.avatar_url ? `http://localhost:8080${post.author.avatar_url}` : '/default-avatar.png'} className="w-9 h-9 rounded-full object-cover" alt="" />
-                    <div className="text-sm text-left">
-                    <span className="font-semibold mr-2 dark:text-white">{post.author.username}</span>
-                    <span className="dark:text-gray-200">{post.description}</span>
-                    <div className="text-xs text-gray-500 mt-1">4 ч.</div>
-                    </div>
-                </div>
-                {comments
-                .filter(c => !c.parent_id) 
-                .map((rootComment) => {
-                const allNestedReplies = comments.filter(reply => 
-                    reply.parent_id && findRootId(reply.id, comments) === rootComment.id
-                );
-                const isExpanded = expandedComments.includes(rootComment.id)
-                return (
-                    <div key={rootComment.id} className="space-y-4 border-l-0 border-gray-100 dark:border-zinc-800">
-                        <div className="flex gap-3 group text-left">
-                            <img 
-                            src={rootComment.author.avatar_url ? `http://localhost:8080${rootComment.author.avatar_url}` : '/default-avatar.png'} 
-                            className="w-9 h-9 rounded-full object-cover flex-shrink-0" 
-                            alt="" 
-                            />
-                            <div className="text-sm flex-1">
-                                <span className="font-semibold mr-2 dark:text-white">{rootComment.author.username}</span>
-                                <span className="dark:text-gray-200">{rootComment.text}</span>
-                                <div className="flex gap-3 text-xs text-gray-500 mt-1">
-                                    <span>{new Date(rootComment.created_at).toLocaleDateString()}</span>
-                                    <button onClick={() => handleReplyInitiation(rootComment)} className="font-semibold hover:text-gray-300">Ответить</button>
-                                </div>
-                            </div>
-                            {rootComment.author.id === user.id && (
-                            <button 
-                                onClick={() => handleDeleteComment(rootComment.id)}
-                                className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity ml-2"
-                                title="Удалить"
-                            >
-                                ✕
-                            </button>
-                            )}
-                        </div>
-
-                        {isExpanded && allNestedReplies.map((reply) => (
-                        <div key={reply.id} className="flex gap-3 ml-11 group text-left">
-                            <img 
-                                src={reply.author.avatar_url ? `http://localhost:8080${reply.author.avatar_url}` : '/default-avatar.png'} 
-                                className="w-9 h-9 rounded-full object-cover flex-shrink-0" 
-                                alt="" 
-                            />
-                            <div className="text-sm flex-1">
-                                <span className="font-semibold mr-2 dark:text-white">{reply.author.username}</span>
-                                <span className="dark:text-gray-200">{reply.text}</span>
-                                <div className="flex gap-3 text-xs text-gray-500 mt-1">
-                                <span>{new Date(reply.created_at).toLocaleDateString()}</span>
-                                <button onClick={() => handleReplyInitiation(reply)} className="font-semibold hover:text-gray-300">Ответить</button>
-                                </div>
-                            </div>
-                            {reply.author.id === user.id && (
-                            <button 
-                                onClick={() => handleDeleteComment(reply.id)}
-                                className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity ml-2"
-                                title="Удалить"
-                            >
-                                ✕
-                            </button>
-                            )}
-                        </div>
-                        
-                        ))}
-
-                        {allNestedReplies.length > 0 && (
-                        <div className="ml-11">
-                            <button 
-                            onClick={() => toggleExpand(rootComment.id)}
-                            className="flex items-center gap-2 text-xs text-gray-500 font-semibold hover:text-gray-400 transition-colors"
-                            >
-                            <span className="w-6 border-t border-gray-300 dark:border-zinc-700"></span>
-                            {isExpanded ? (
-                                `Скрыть ответы`
-                            ) : (
-                                `Посмотреть ответы (${allNestedReplies.length})`
-                            )}
-                            </button>
-                        </div>
-                        )}
-                        <div> 
-                         {/* Для отступа после всех ответов*/}
-                        </div>
-                    </div>
-                );
-                })}
-             </div>
-          </div>
-
-          <div className="p-4 text-left">
-            <div className="flex gap-4 mb-2">
+            ) : (
+              <div className="text-white">Медиа отсутствуют</div>
+            )}
+            {post.media_urls?.length > 1 && (
+              <>
               <button 
-                onClick={handleLikeToggle}
-                className={`${liked ? 'text-red-500' : 'dark:text-white'} transition-transform active:scale-125`}
+                onClick={() => setCurrentMediaIdx(prev => (prev - 1 + post.media_urls.length) % post.media_urls.length)}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-black w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-md z-10"
               >
-                <svg viewBox="0 0 24 24" className={`w-7 h-7 ${liked ? 'fill-current' : 'fill-none stroke-current stroke-2'}`}>
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
+                ❮
               </button>
-              
-            </div>
-            <div className="font-semibold text-sm dark:text-white">{likesCount} отметок "Нравится"</div>
-            
-            <div className="text-[10px] text-gray-400 uppercase mt-1">{new Date(post.created_at).toLocaleDateString()}</div>
+              <button 
+                onClick={() => setCurrentMediaIdx(prev => (prev + 1) % post.media_urls.length)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-black w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-md z-10"
+              >
+                ❯
+              </button>
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                {post.media_urls.map((_, idx) => (
+                  <div 
+                    key={idx}
+                    className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentMediaIdx ? 'bg-white' : 'bg-white/40'}`} 
+                  />
+                ))}
+              </div>
+            </>
+            )}
           </div>
 
-            <form onSubmit={handleSendComment} className="p-4 border-t border-gray-200 dark:border-gray-800 flex items-center gap-3">
-                
-                <input 
-                type="text" 
-                value={commentText}
-                onChange={handleInputChange}
-                placeholder="Добавьте комментарий..." 
-                className="flex-1 bg-transparent text-sm focus:outline-none dark:text-white"
+          <div className="flex-1 flex flex-col bg-white dark:bg-insta-light-dark min-w-[350px]">
+            <div className="flex items-center justify-between p-4 border-b border-gray-800">
+              <div className="flex items-center gap-3 ">
+                <img 
+                  src={post.author.avatar_url ? `http://localhost:8080${post.author.avatar_url}` : '/default-avatar.png'} 
+                  className="w-9 h-9 rounded-full object-cover cursor-pointer hover:opacity-80" 
+                  alt="avatar"
+                  onClick={() => navigate(`/profile/${post.author.username}`)}
                 />
+                <span className="font-semibold text-sm dark:text-white cursor-pointer hover:opacity-80" onClick={() => navigate(`/profile/${post.author.username}`)}>{post.author.username}</span>
+              </div>
+              <PostOptions post={post} currentUser={user}/>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
+              <div className="text-gray-500 text-sm text-center">
+                  <div className="flex gap-3 pb-4">
+                      <img src={post.author.avatar_url ? `http://localhost:8080${post.author.avatar_url}` : '/default-avatar.png'} className="w-9 h-9 rounded-full object-cover cursor-pointer hover:opacity-80" alt="" onClick={() => navigate(`/profile/${post.author.username}`)}/>
+                      <div className="text-sm text-left">
+                      <span className="font-semibold mr-2 dark:text-white cursor-pointer hover:opacity-80" onClick={() => navigate(`/profile/${post.author.username}`)}>{post.author.username}</span>
+                      <span className="dark:text-gray-200">{post.description}</span>
+                      <div className="text-xs text-gray-500 mt-1">{new Date(post.created_at).toLocaleDateString()}</div>
+                      </div>
+                  </div>
+                  {comments
+                  .filter(c => !c.parent_id) 
+                  .map((rootComment) => {
+                  const allNestedReplies = comments.filter(reply => 
+                      reply.parent_id && findRootId(reply.id, comments) === rootComment.id
+                  );
+                  const isExpanded = expandedComments.includes(rootComment.id)
+                  return (
+                      <div key={rootComment.id} className="space-y-4 border-l-0 border-gray-100 dark:border-zinc-800">
+                          <div className="flex gap-3 group text-left">
+                              <img 
+                              src={rootComment.author.avatar_url ? `http://localhost:8080${rootComment.author.avatar_url}` : '/default-avatar.png'} 
+                              className="w-9 h-9 rounded-full object-cover flex-shrink-0 cursor-pointer hover:opacity-80" 
+                              alt="" 
+                              onClick={() => navigate(`/profile/${rootComment.author.username}`)}
+                              />
+                              <div className="text-sm flex-1">
+                                  <span className="font-semibold mr-2 dark:text-white cursor-pointer hover:opacity-80" onClick={() => navigate(`/profile/${rootComment.author.username}`)}>{rootComment.author.username}</span>
+                                  <span className="dark:text-gray-200">{rootComment.text}</span>
+                                  <div className="flex gap-3 text-xs text-gray-500 mt-1">
+                                      <span>{new Date(rootComment.created_at).toLocaleDateString()}</span>
+                                      <button onClick={() => handleReplyInitiation(rootComment)} className="font-semibold hover:text-gray-300">Ответить</button>
+                                  </div>
+                              </div>
+                              {rootComment.author.id === user.id && (
+                              <button 
+                                  onClick={() => handleDeleteComment(rootComment.id)}
+                                  className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity ml-2"
+                                  title="Удалить"
+                              >
+                                  ✕
+                              </button>
+                              )}
+                          </div>
+
+                          {isExpanded && allNestedReplies.map((reply) => (
+                          <div key={reply.id} className="flex gap-3 ml-11 group text-left">
+                              <img 
+                                  src={reply.author.avatar_url ? `http://localhost:8080${reply.author.avatar_url}` : '/default-avatar.png'} 
+                                  className="w-9 h-9 rounded-full object-cover flex-shrink-0 cursor-pointer hover:opacity-80" 
+                                  alt="" 
+                                  onClick={() => navigate(`/profile/${reply.author.username}`)}
+                              />
+                              <div className="text-sm flex-1">
+                                  <span className="font-semibold mr-2 dark:text-white cursor-pointer hover:opacity-80" onClick={() => navigate(`/profile/${reply.author.username}`)}>{reply.author.username}</span>
+                                  <span className="dark:text-gray-200">{reply.text}</span>
+                                  <div className="flex gap-3 text-xs text-gray-500 mt-1">
+                                  <span>{new Date(reply.created_at).toLocaleDateString()}</span>
+                                  <button onClick={() => handleReplyInitiation(reply)} className="font-semibold hover:text-gray-300">Ответить</button>
+                                  </div>
+                              </div>
+                              {reply.author.id === user.id && (
+                              <button 
+                                  onClick={() => handleDeleteComment(reply.id)}
+                                  className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity ml-2"
+                                  title="Удалить"
+                              >
+                                  ✕
+                              </button>
+                              )}
+                          </div>
+                          
+                          ))}
+
+                          {allNestedReplies.length > 0 && (
+                          <div className="ml-11">
+                              <button 
+                              onClick={() => toggleExpand(rootComment.id)}
+                              className="flex items-center gap-2 text-xs text-gray-500 font-semibold hover:text-gray-400 transition-colors"
+                              >
+                              <span className="w-6 border-t border-gray-300 dark:border-zinc-700"></span>
+                              {isExpanded ? (
+                                  `Скрыть ответы`
+                              ) : (
+                                  `Посмотреть ответы (${allNestedReplies.length})`
+                              )}
+                              </button>
+                          </div>
+                          )}
+                          <div> 
+                          {/* Для отступа после всех ответов*/}
+                          </div>
+                      </div>
+                  );
+                  })}
+              </div>
+            </div>
+
+            <div className="p-4 text-left">
+              <div className="flex gap-4 mb-2">
                 <button 
-                type="submit"
-                disabled={!commentText.trim() || isSubmitting}
-                className="text-blue-500 font-semibold text-sm disabled:opacity-50"
+                  onClick={handleLikeToggle}
+                  className={`${liked ? 'text-red-500' : 'dark:text-white'} transition-transform active:scale-125`}
                 >
-                {isSubmitting ? '...' : 'Опубликовать'}
+                  <svg viewBox="0 0 24 24" className={`w-7 h-7 ${liked ? 'fill-current' : 'fill-none stroke-current stroke-2'}`}>
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
                 </button>
-            </form>
+                
+              </div>
+              <div className="font-semibold text-sm dark:text-white">{likesCount} отметок "Нравится"</div>
+              
+              <div className="text-[10px] text-gray-400 uppercase mt-1">{new Date(post.created_at).toLocaleDateString()}</div>
+            </div>
+
+              <form onSubmit={handleSendComment} className="p-4 border-t border-gray-200 dark:border-gray-800 flex items-center gap-3">
+                  
+                  <input 
+                  type="text" 
+                  value={commentText}
+                  onChange={handleInputChange}
+                  placeholder="Добавьте комментарий..." 
+                  className="flex-1 bg-transparent text-sm focus:outline-none dark:text-white"
+                  />
+                  <button 
+                  type="submit"
+                  disabled={!commentText.trim() || isSubmitting}
+                  className="text-blue-500 font-semibold text-sm disabled:opacity-50"
+                  >
+                  {isSubmitting ? '...' : 'Опубликовать'}
+                  </button>
+              </form>
+          </div>
         </div>
-      </div>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const ExploreItem = ({ post, onClick }) => {
         ]);
         setStats({
           likes: likesRes.data,
-          comments: commentsRes.data.length || 0
+          comments: commentsRes.data?.length || 0
         });
       } catch (err) {
         console.error("Ошибка загрузки статистики поста", err);
