@@ -112,7 +112,7 @@ const NotificationsPanel = ({ isOpen, onClose, refreshTrigger }) => {
         <div className="flex items-center gap-3">
           <img 
             src={n.author.avatar_url ? `http://localhost:8080${n.author.avatar_url}` : '/default-avatar.png'} 
-            className="w-11 h-11 rounded-full object-cover cursor-pointer hover:opacity-80" 
+            className="w-11 h-11 flex-shrink-0 rounded-full object-cover cursor-pointer hover:opacity-80" 
             alt="" 
             onClick={(e)=>handleUserClick(e, n.author.username)}
           />

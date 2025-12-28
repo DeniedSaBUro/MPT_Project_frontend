@@ -184,7 +184,7 @@ const PostModal = ({post, onClose }) => {
               <div className="flex items-center gap-3 ">
                 <img 
                   src={post.author.avatar_url ? `http://localhost:8080${post.author.avatar_url}?t=${Date.now()}` : '/default-avatar.png'} 
-                  className="w-9 h-9 rounded-full object-cover cursor-pointer hover:opacity-80" 
+                  className="w-9 h-9 rounded-full object-cover cursor-pointer hover:opacity-80 flex-shrink-0" 
                   alt="avatar"
                   onClick={() => navigate(`/profile/${post.author.username}`)}
                 />
@@ -195,7 +195,7 @@ const PostModal = ({post, onClose }) => {
             <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
               <div className="text-gray-500 text-sm text-center">
                   <div className="flex gap-3 pb-4">
-                      <img src={post.author.avatar_url ? `http://localhost:8080${post.author.avatar_url}?t=${Date.now()}` : '/default-avatar.png'} className="w-9 h-9 rounded-full object-cover cursor-pointer hover:opacity-80" alt="" onClick={() => navigate(`/profile/${post.author.username}`)}/>
+                      <img src={post.author.avatar_url ? `http://localhost:8080${post.author.avatar_url}?t=${Date.now()}` : '/default-avatar.png'} className="w-9 h-9 rounded-full object-cover cursor-pointer hover:opacity-80 flex-shrink-0" alt="" onClick={() => navigate(`/profile/${post.author.username}`)}/>
                       <div className="text-sm text-left">
                       <span className="font-semibold mr-2 dark:text-white cursor-pointer hover:opacity-80" onClick={() => navigate(`/profile/${post.author.username}`)}>{post.author.username}</span>
                       <span className="dark:text-gray-200">{post.description}</span>

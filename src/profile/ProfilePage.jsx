@@ -8,6 +8,7 @@ import PostModal from '../components/PostModal';
 import http from '../http-common';
 import toast from 'react-hot-toast';
 import Sidebar from '../components/Sidebar';
+import ExploreItem from '../explore/ExploreItem';
 
 const ProfilePage = () => {
   const { user: currentUser } = useAuth();
@@ -483,42 +484,10 @@ const ProfilePage = () => {
                   const commentsCount = getCommentsCount(post);
                   
                   return (
-                    <div
-                      key={post.id}
-                      className="relative aspect-square overflow-hidden rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => handlePostClick(post)}
-                    >
-                      {post.media_urls?.length > 0 ? (
-                        <img
-                          src={`http://localhost:8080${post.media_urls[0]}`}
-                          alt={`Post ${post.id}`}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center">
-                          <svg className="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                        </div>
-                      )}
-                      
-                      <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 hover:opacity-100">
-                        <div className="flex gap-6 text-white">
-                          <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
-                            </svg>
-                            <span className="font-semibold">{likesCount}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd"/>
-                            </svg>
-                            <span className="font-semibold">{commentsCount}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <ExploreItem
+                      key={post.id} 
+                      post={post} 
+                      onClick={() => handlePostClick(post)} />
                   );
                 })}
               </div>
