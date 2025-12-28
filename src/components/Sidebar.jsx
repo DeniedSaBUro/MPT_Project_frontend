@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import iconLight from '../assets/icon-light.png';
@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import CreatePostModal from './CreatePostModal';
 import NotificationsPanel from './NotificationsPanel';
 import http from '../http-common';
+import useNotifications from '../services/useNotifications';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -15,15 +16,21 @@ const Sidebar = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const [isDark, setIsDark] = useState(() => {
     return localStorage.getItem('theme') === 'dark' || 
            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
   });
 
+  const handleWSUpdate = useCallback(() => {
+    setRefreshTrigger(prev => prev + 1);
+  }, []);
+
+  const { unreadCount, setUnreadCount } = useNotifications(handleWSUpdate);
+
   useEffect(() => {
-    const fetchCount = async () => {
+    const fetchInitialCount = async () => {
       try {
         const res = await http.get('/notifications/count');
         setUnreadCount(res.data || 0);
@@ -31,14 +38,12 @@ const Sidebar = () => {
         console.error(err);
       }
     };
-    fetchCount();
-    const interval = setInterval(fetchCount, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchInitialCount();
+  }, [setUnreadCount, refreshTrigger]);
 
   const handleNotifClick = () => {
     setIsNotifOpen(!isNotifOpen);
-    if (!isNotifOpen) setUnreadCount(0); // Визуально сбрасываем при открытии
+    if (!isNotifOpen) setUnreadCount(0);
   };
 
   useEffect(() => {
@@ -206,7 +211,7 @@ const Sidebar = () => {
           />
       )}
 
-      <NotificationsPanel isOpen={isNotifOpen} onClose={() => setIsNotifOpen(false)} />
+      <NotificationsPanel isOpen={isNotifOpen} onClose={() => setIsNotifOpen(false)} refreshTrigger={refreshTrigger}/>
         {isNotifOpen && (
             <div 
               className="fixed inset-0 bg-transparent z-[140]" 

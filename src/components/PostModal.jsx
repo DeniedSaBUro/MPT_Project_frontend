@@ -46,7 +46,6 @@ const PostModal = ({post, onClose }) => {
   };
 
   useEffect(() => {
-    console.log(post)
     document.body.style.overflow = 'hidden';
     const fetchData = async () => {
         try {
@@ -283,7 +282,6 @@ const PostModal = ({post, onClose }) => {
                           </div>
                           )}
                           <div> 
-                          {/* Для отступа после всех ответов*/}
                           </div>
                       </div>
                   );

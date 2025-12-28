@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import http from '../http-common';
 import { useNavigate } from 'react-router-dom';
+import FollowButton from './FollowButton';
 
-const NotificationsPanel = ({ isOpen, onClose }) => {
+const NotificationsPanel = ({ isOpen, onClose, refreshTrigger }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [postData, setPostData] = useState({});
@@ -24,11 +25,12 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
   };
 
   useEffect(() => {
+    fetchNotifications();
     if (isOpen) {
-      fetchNotifications();
+      
       markAllAsRead();
     }
-  }, [isOpen]);
+  }, [isOpen, refreshTrigger]);
 
   const fetchNotifications = async () => {
     try {
@@ -141,12 +143,9 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
         )}
         
         {n.Type === 'FOLLOW' && (
-          <button className="bg-blue-500 text-white px-4 py-1.5 rounded-lg text-xs font-semibold"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Подписаться
-          </button>
-        )}
+          <FollowButton userId={n.author.id}/>
+          )
+        }
       </div>
     );
   }

@@ -19,7 +19,7 @@ const followService = {
     return response.data;
   },
 
-  checkFollow: async (followerId, followingId) => {
+  checkFollow: async (followingId) => {
     const response = await http.get(`/follower/${followingId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
