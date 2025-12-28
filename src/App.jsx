@@ -3,7 +3,8 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './auth/LoginPage';
 import RegisterPage from './auth/RegisterPage';
-import ProfilePage from './profile/ProfileUpdatePage'
+import ProfileUpdatePage from './profile/ProfileUpdatePage'
+import ProfilePage from './profile/ProfilePage';
 import './App.css';
 import HomePage from './home/Home';
 import ExplorePage from './explore/Explore';
@@ -30,9 +31,11 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/profile" element = {
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:username" element={<ProfilePage />} />
+          <Route path="/edit-profile" element = {
             <ProtectedRoute>
-              <ProfilePage />
+              <ProfileUpdatePage />
             </ProtectedRoute>
           }
           />

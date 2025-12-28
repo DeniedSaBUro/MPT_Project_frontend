@@ -5,7 +5,7 @@ import App from './App.jsx'
 
 import { initTheme } from './theme'
 
-initTheme(); // ← ВАЖНО
+initTheme();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

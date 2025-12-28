@@ -57,6 +57,40 @@ const uploadAvatar = async (file) =>{
 
     return response.data
 }
+
+const getUserByUsername = async (username) => {
+    try {
+      const response = await http.get(`/users/username/${username}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user by username:', error);
+      throw error;
+    }
+};
+
+const getUserById = async (userId) => {
+    try {
+      const response = await http.get(`/users/id/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user by ID:', error);
+      throw error;
+    }
+};
+
+const searchUsers = async (query) => {
+    try {
+      const response = await http.get('/users/search', {
+        params: { q: query }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      return [];
+    }
+};
+
+
 const authService = {
     login,
     register,
@@ -64,7 +98,10 @@ const authService = {
     getProfile,
     updateProfile,
     changePassword,
-    uploadAvatar
+    uploadAvatar,
+    getUserByUsername,
+    getUserById,
+    searchUsers
 };
 
 export default authService;
