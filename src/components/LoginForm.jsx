@@ -70,48 +70,54 @@ const LoginForm = ({ onSubmit, loading, error: externalError, onErrorClear }) =>
             value={formData.username}
             onChange={handleChange}
             className={`appearance-none block w-full px-3 py-2 border ${
-              errors.username ? 'border-red-300' : 'border-gray-300'
-            } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+              errors.username ? 'border-red-300' : 'border-gray-300 dark:border-zinc-700'
+            } rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500
+            bg-white dark:bg-zinc-800 text-black dark:text-white
+            focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
             placeholder="Имя пользователя"
           />
           {errors.username && (
             <p className="mt-1 text-sm text-red-600">{errors.username}</p>
           )}
         </div>
+        {/* Пароль */}
+        <div>
+          <div className="mt-1 relative">
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className={`appearance-none block w-full px-3 py-2 border ${
+                errors.username ? 'border-red-300' : 'border-gray-300 dark:border-zinc-700'
+              } rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500
+              bg-white dark:bg-zinc-800 text-black dark:text-white
+              focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+              placeholder="Пароль"
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              ) : (
+                <EyeIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+              )}
+            </button>
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Пароль */}
-      <div>
-        <div className="mt-1 relative">
-          <input
-            id="password"
-            name="password"
-            type={showPassword ? "text" : "password"}
-            autoComplete="current-password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-            className={`appearance-none block w-full px-3 py-2 border ${
-              errors.password ? 'border-red-300' : 'border-gray-300'
-            } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm pr-10`}
-            placeholder="Пароль"
-          />
-          <button
-            type="button"
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? (
-              <EyeSlashIcon className="h-5 w-5 text-gray-400" />
-            ) : (
-              <EyeIcon className="h-5 w-5 text-gray-400" />
-            )}
-          </button>
-          {errors.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-          )}
-        </div>
-      </div>
+    
 
       {/* Кнопка отправки */}
       <div>

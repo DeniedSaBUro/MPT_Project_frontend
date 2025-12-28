@@ -88,46 +88,64 @@ const ProfilePage = () => {
 
   return (
 
-      <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded shadow">
+      <div className="max-w-4xl mx-auto mt-10 p-6 bg-white dark:bg-zinc-900 text-black dark:text-white rounded shadow">
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => navigate('/')}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded"
+            className="bg-gray-200 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-white px-4 py-2 rounded"
           >
             На главную
           </button>
         <h1 className="text-2xl font-bold">Профиль</h1>
       </div>
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex flex-col items-center md:w-1/3">
+      <div className="flex flex-col md:flex-row gap-10">
+      <div className="flex flex-col items-center md:w-1/3">
+        <label className="relative group cursor-pointer">
           <img
             src={
               user?.avatar_url
                 ? `http://localhost:8080${user.avatar_url}?t=${Date.now()}`
                 : '/default-avatar.png'
             }
-            className="w-32 h-32 rounded-full object-cover mb-4"
+            className="w-36 h-36 rounded-full object-cover border-2 border-gray-300 dark:border-zinc-700"
+            alt="avatar"
           />
+
+          {/* overlay */}
+          <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+            <span className="text-white text-sm font-medium">Сменить фото</span>
+          </div>
+
           <input
             type="file"
-            className="mb-2"
+            accept="image/*"
             onChange={e => setAvatarFile(e.target.files[0])}
+            className="hidden"
           />
-          <button
-            onClick={handleAvatarUpload}
-            className="bg-indigo-600 text-white px-4 py-2 rounded w-full"
-          >
-            Загрузить аватар
-          </button>
-        </div>
+        </label>
 
-        <div className="flex-1 space-y-4">
+        {avatarFile && (
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Выбрано: {avatarFile.name}
+          </p>
+        )}
+
+        <button
+          onClick={handleAvatarUpload}
+          className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded transition"
+        >
+          Сохранить аватар
+        </button>
+      </div>
+
+        <div className="md:w-2/3 space-y-4">
           <div>
             <label className="block mb-1 font-semibold">Имя пользователя</label>
             <input
               value={form.username}
               onChange={e => setForm({ ...form, username: e.target.value })}
-              className="w-full border rounded px-3 py-2"
+              className="w-full border border-gray-300 dark:border-zinc-700 rounded px-3 py-2 bg-white dark:bg-zinc-800 text-black dark:text-white"
+
             />
           </div>
 
@@ -136,7 +154,8 @@ const ProfilePage = () => {
             <input
               value={form.full_name}
               onChange={e => setForm({ ...form, full_name: e.target.value })}
-              className="w-full border rounded px-3 py-2"
+              className="w-full border border-gray-300 dark:border-zinc-700 rounded px-3 py-2 bg-white dark:bg-zinc-800 text-black dark:text-white"
+
             />
           </div>
 
@@ -145,7 +164,8 @@ const ProfilePage = () => {
             <textarea
               value={form.description}
               onChange={e => setForm({ ...form, description: e.target.value })}
-              className="w-full border rounded px-3 py-2"
+              className="w-full border border-gray-300 dark:border-zinc-700 rounded px-3 py-2 bg-white dark:bg-zinc-800 text-black dark:text-white"
+
               rows={3}
             />
           </div>
@@ -157,7 +177,7 @@ const ProfilePage = () => {
             Сохранить изменения
           </button>
 
-          <hr className="my-4" />
+          <hr className="my-4 border-gray-300 dark:border-zinc-700" />
 
           <div>
             <h2 className="text-lg font-semibold mb-2">Сменить пароль</h2>
@@ -166,14 +186,14 @@ const ProfilePage = () => {
               placeholder="Старый пароль"
               value={passwords.old}
               onChange={e => setPasswords({ ...passwords, old: e.target.value })}
-              className="w-full border rounded px-3 py-2 mb-2"
+              className="w-full border border-gray-300 dark:border-zinc-700 rounded px-3 py-2 mb-2 bg-white dark:bg-zinc-800 text-black dark:text-white"
             />
             <input
               type="password"
               placeholder="Новый пароль (мин. 8 символов)"
               value={passwords.new}
               onChange={e => setPasswords({ ...passwords, new: e.target.value })}
-              className="w-full border rounded px-3 py-2 mb-2"
+              className="w-full border border-gray-300 dark:border-zinc-700 rounded px-3 py-2 mb-2 bg-white dark:bg-zinc-800 text-black dark:text-white"
             />
             <button
               onClick={handlePasswordChange}
@@ -189,9 +209,11 @@ const ProfilePage = () => {
           >
             Выйти
           </button>
+          </div>
         </div>
       </div>
-    </div>
+
+
   );
 };
 
