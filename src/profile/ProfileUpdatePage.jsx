@@ -21,7 +21,7 @@ const ProfilePage = () => {
     if (user) {
       const data = {
         username: user.username || '',
-        full_name: user.full_name || '',
+        fullName: user.full_name || '',
         description: user.description || ''
       };
       setForm(data);
@@ -32,7 +32,7 @@ const ProfilePage = () => {
   const handleProfileSave = async () => {
     const diff = {};
     if (form.username !== initialForm.username) diff.username = form.username;
-    if (form.full_name !== initialForm.full_name) diff.full_name = form.full_name;
+    if (form.fullName !== initialForm.full_name) diff.fullName = form.full_name;
     if (form.description !== initialForm.description) diff.description = form.description;
 
     if (!Object.keys(diff).length) {
@@ -111,7 +111,6 @@ const ProfilePage = () => {
             alt="avatar"
           />
 
-          {/* overlay */}
           <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
             <span className="text-white text-sm font-medium">Сменить фото</span>
           </div>
