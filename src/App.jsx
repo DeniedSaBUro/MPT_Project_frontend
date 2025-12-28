@@ -6,6 +6,7 @@ import RegisterPage from './auth/RegisterPage';
 import ProfileUpdatePage from './profile/ProfileUpdatePage'
 import ProfilePage from './profile/ProfilePage';
 import PostPage from './post/PostPage';
+import UserSearchModal from './components/SearchPanel';
 import './App.css';
 import HomePage from './home/Home';
 import ExplorePage from './explore/Explore';
@@ -51,6 +52,7 @@ function App() {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="*" element={<Navigate to="/" />} />
           <Route path="/p/:id" element={<PostPage />} />
+          <Route path="/search" element={UserSearchModal}/>
         </Routes>
       </Router>
     </AuthProvider>
