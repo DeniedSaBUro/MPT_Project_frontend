@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import { useAuth } from '../context/AuthContext';
+import iconLight from '../assets/icon-light.png';
+import iconDark from '../assets/icon-dark.png';
 
 const LoginPage = () => {
   const [error, setError] = useState('');
@@ -9,6 +11,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isAuthenticated } = useAuth();
+
+  const [isDark, setIsDark] = useState(() => {
+      return localStorage.getItem('theme') === 'dark' || 
+             (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    });
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -56,6 +63,13 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-black dark:text-white">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center mb-6">
+          <img
+            src={isDark ? iconDark : iconLight}
+            alt="Instagram"
+            className="h-12 object-contain"
+          />
+        </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           Войти в аккаунт
         </h2>
@@ -77,6 +91,7 @@ const LoginPage = () => {
               {location.state.message}
             </div>
           )}
+
 
           {/* Форма входа */}
           <LoginForm 

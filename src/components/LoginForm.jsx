@@ -51,6 +51,7 @@ const LoginForm = ({ onSubmit, loading, error: externalError, onErrorClear }) =>
   };
 
   return (
+    
     <form className="space-y-6" onSubmit={handleSubmit}>
       {externalError && (
         <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
@@ -116,10 +117,7 @@ const LoginForm = ({ onSubmit, loading, error: externalError, onErrorClear }) =>
         </div>
       </div>
 
-      {/* Пароль */}
-    
 
-      {/* Кнопка отправки */}
       <div>
         <button
           type="submit"

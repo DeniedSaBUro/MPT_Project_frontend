@@ -45,6 +45,16 @@ const Sidebar = () => {
       )
     },
     { 
+      name: 'Интересное', 
+      path: '/explore', 
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-none stroke-current stroke-2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z" />
+        </svg>
+      )
+    },
+    { 
       name: 'Уведомления', 
       path: '/notifications', 
       icon: (
@@ -79,7 +89,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 border-r border-gray-200 dark:border-insta-border bg-white dark:bg-insta-dark flex flex-col p-4 z-50 transition-colors duration-300">
+    <div className="fixed left-0 top-0 h-screen w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-insta-dark flex flex-col p-4 z-50 transition-colors duration-300">
       <div className="mb-10 px-4 mt-4 h-10 flex items-center">
         <img 
           src={isDark ? iconDark : iconLight} 

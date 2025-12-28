@@ -6,6 +6,7 @@ import RegisterPage from './auth/RegisterPage';
 import ProfilePage from './profile/ProfileUpdatePage'
 import './App.css';
 import HomePage from './home/Home';
+import ExplorePage from './explore/Explore';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -43,6 +44,7 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
